@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyZina – Gâteaux Traditionnels Algériens | حلويات جزائرية تقليدية</title>
+    <meta name="description" content="Découvrez l'excellence de la pâtisserie traditionnelle algérienne avec MyZina. Commandez en ligne vos gâteaux préférés.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- External Libraries -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        :root {
+            --burgundy: #4a0404;
+            --dark-burgundy: #2d0202;
+            --gold: #d4af37;
+            --light-gold: #f4e4bc;
+            --white: #ffffff;
+            --text-gray: #4a4a4a;
+            --cream: #fffaf0;
+            --transition: all 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+
+        [dir="rtl"] { font-family: 'Amiri', serif; }
+        [dir="ltr"] { font-family: 'Cormorant Garamond', serif; }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            background-color: var(--burgundy);
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+            opacity: 0;
+        }
+
+        h1, h2, h3, h4, .logo-text { font-family: 'Playfair Display', serif; }
+        [dir="rtl"] h1, [dir="rtl"] h2, [dir="rtl"] h3, [dir="rtl"] h4 { font-family: 'Amiri', serif; font-weight: 700; }
+
+        .lang-switch {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 100;
+        }
+        [dir="rtl"] .lang-switch { right: auto; left: 20px; }
+        
+        .lang-btn {
+            background: rgba(212, 175, 55, 0.1);
+            border: 1px solid var(--gold);
+            color: var(--gold);
+            padding: 8px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: var(--transition);
+            backdrop-filter: blur(5px);
+            border-radius: 2px;
+        }
+        .lang-btn:hover { background: var(--gold); color: var(--burgundy); transform: scale(1.05); }
+
+        header {
+            padding: 4rem 1rem 5rem;
+            text-align: center;
+            background: linear-gradient(to bottom, var(--dark-burgundy), var(--burgundy));
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .logo-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        .logo-img {
+            width: 160px;
+            height: 160px;
+            border-radius: 50%;
+            border: 2px solid var(--gold);
+            padding: 5px;
+            object-fit: cover;
+            transition: var(--transition);
+            box-shadow: 0 0 40px rgba(212, 175, 55, 0.2);
+            background: var(--dark-burgundy);
+        }
+        .logo-img:hover { transform: scale(1.03) rotate(2deg); border-color: var(--light-gold); }
+        
+        .hd { display: flex; align-items: center; justify-content: center; gap: 15px; margin: 20px 0; }
+        .hd span { height: 1px; width: 60px; background: var(--gold); opacity: 0.6; }
+        .hd-star { color: var(--gold); font-size: 1.2rem; }
+        .tagline { 
+            font-style: italic; 
+            color: var(--light-gold); 
+            letter-spacing: 4px; 
+            font-size: 1.1rem; 
+            text-transform: uppercase; 
+            margin-top: 25px; 
+            display: block;
+        }
+
+        nav { margin-top: 3.5rem; display: flex; justify-content: center; gap: 3rem; flex-wrap: wrap; }
+        nav a { color: var(--white); text-decoration: none; text-transform: uppercase; font-size: 0.85rem; letter-spacing: 2px; transition: var(--transition); position: relative; opacity: 0.8; }
+        nav a::after { content: ''; position: absolute; width: 0; height: 1px; bottom: -5px; left: 0; background-color: var(--gold); transition: var(--transition); }
+        nav a:hover { color: var(--gold); opacity: 1; letter-spacing: 3px; }
+        nav a:hover::after { width: 100%; }
+
+        .hero { padding: 10rem 10% 8rem; text-align: center; max-width: 1000px; margin: 0 auto; }
+        .hero h2 { font-size: 4.5rem; margin-bottom: 2rem; color: var(--gold); line-height: 1.1; font-weight: 400; }
+        .ornament { color: var(--gold); margin: 3rem 0; font-size: 1.5rem; letter-spacing: 20px; opacity: 0.7; }
+        .hero p { font-size: 1.5rem; color: var(--light-gold); font-weight: 300; max-width: 750px; margin: 0 auto; line-height: 1.8; }
+
+        section { padding: 8rem 5%; background: var(--cream); color: var(--dark-burgundy); }
+        .sec-title { text-align: center; margin-bottom: 5rem; }
+        .sec-title h3 { font-size: 3.5rem; color: var(--burgundy); margin-bottom: 1rem; }
+        .sec-title p { font-style: italic; color: var(--text-gray); font-size: 1.2rem; opacity: 0.8; }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 4rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .product-card {
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: var(--transition);
+            cursor: pointer;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.03);
+            border: 1px solid rgba(212, 175, 55, 0.1);
+            position: relative;
+        }
+        .product-card:hover { transform: translateY(-15px); box-shadow: 0 30px 60px rgba(74, 4, 4, 0.12); border-color: var(--gold); }
+        
+        .product-img-wrap { overflow: hidden; height: 320px; background: #eee; }
+        .product-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.8s ease; }
+        .product-card:hover .product-img { transform: scale(1.1); }
+        
+        .product-info { padding: 2.5rem; text-align: center; }
+        .product-info h4 { font-size: 2rem; color: var(--burgundy); margin-bottom: 0.75rem; }
+        .product-info .price-tag { color: var(--gold); font-weight: 600; font-size: 1.4rem; padding-top: 1.2rem; display: inline-block; width: 100%; border-top: 1px dashed rgba(212, 175, 55, 0.3); }
+
+        .quality-section { background: var(--burgundy); color: var(--white); }
+        .quality-grid { display: flex; gap: 3rem; justify-content: center; max-width: 1100px; margin: 0 auto; flex-wrap: wrap; }
+        .quality-card {
+            flex: 1;
+            min-width: 320px;
+            background: rgba(255,255,255,0.02);
+            padding: 5rem 3rem;
+            text-align: center;
+            border: 1px solid rgba(212, 175, 55, 0.15);
+            transition: var(--transition);
+            border-radius: 2px;
+        }
+        .quality-card:hover { background: rgba(255,255,255,0.06); border-color: var(--gold); transform: translateY(-8px); }
+        .q-icon { font-size: 4rem; display: block; margin-bottom: 2rem; filter: drop-shadow(0 5px 15px rgba(212, 175, 55, 0.2)); }
+        .q-name { font-family: 'Playfair Display', serif; font-size: 2.4rem; color: var(--gold); margin-bottom: 1.5rem; }
+        .q-desc { font-size: 1.15rem; color: var(--light-gold); font-weight: 300; opacity: 0.9; }
+
+        .order-section { 
+            background: #fffefb; 
+            padding: 10rem 5%; 
+            background-image: radial-gradient(var(--light-gold) 0.6px, transparent 0.6px);
+            background-size: 30px 30px;
+        }
+        .order-container {
+            display: grid;
+            grid-template-columns: 1.3fr 1fr;
+            gap: 4rem;
+            max-width: 1100px;
+            margin: 0 auto;
+            align-items: start;
+        }
+        .order-form-container { 
+            background: white; 
+            padding: 4rem; 
+            border-radius: 2px; 
+            box-shadow: 0 50px 100px rgba(74, 4, 4, 0.05); 
+            border: 1px solid rgba(212, 175, 55, 0.15); 
+        }
+        
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 2rem; margin-bottom: 2rem; }
+        .form-group { display: flex; flex-direction: column; gap: 0.8rem; }
+        .form-group label { font-weight: 700; font-size: 0.75rem; text-transform: uppercase; color: var(--burgundy); letter-spacing: 2px; }
+        
+        input, select, textarea {
+            padding: 18px;
+            border: 1px solid #f0f0f0;
+            border-radius: 0;
+            font-size: 1.1rem;
+            background: #fafafa;
+            transition: var(--transition);
+            width: 100%;
+        }
+        input:focus, select:focus, textarea:focus { outline: none; border-color: var(--gold); background: #fff; }
+        
+        .summary-card {
+            background: var(--burgundy);
+            color: var(--white);
+            padding: 3.5rem;
+            border-radius: 2px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 50px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+        }
+        .summary-title { 
+            font-family: 'Playfair Display', serif; 
+            font-size: 2rem; 
+            color: var(--gold); 
+            margin-bottom: 2.5rem; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+            padding-bottom: 1.5rem;
+            display: block;
+        }
+        .summary-item { display: flex; justify-content: space-between; margin-bottom: 1.2rem; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 0.8rem; }
+        .summary-item span:first-child { color: var(--light-gold); }
+        .summary-total-box { margin-top: 3rem; padding-top: 2rem; border-top: 2px solid var(--gold); }
+        .total-row { display: flex; justify-content: space-between; align-items: baseline; }
+        .total-label { font-size: 1.3rem; text-transform: uppercase; letter-spacing: 3px; color: var(--gold); }
+        .total-val { font-size: 2.8rem; font-family: 'Playfair Display', serif; color: var(--white); font-weight: bold; }
+
+        .submit-btn {
+            width: 100%;
+            padding: 24px;
+            background: var(--gold);
+            color: var(--burgundy);
+            border: none;
+            text-transform: uppercase;
+            letter-spacing: 5px;
+            font-weight: 900;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 3rem;
+        }
+        .submit-btn:hover { background: var(--white); transform: translateY(-5px); }
+        .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        footer {
+            padding: 8rem 1rem;
+            text-align: center;
+            background: var(--dark-burgundy);
+            border-top: 2px solid var(--gold);
+        }
+        .footer-logo { width: 150px; height: 150px; border-radius: 50%; margin: 0 auto 2.5rem; border: 2px solid var(--gold); padding: 5px; background: var(--burgundy); display: block; object-fit: cover; }
+        .footer-info { color: var(--light-gold); font-size: 1.2rem; margin-bottom: 3rem; line-height: 2.2; opacity: 0.9; }
+        .footer-copy { display: block; margin-top: 4rem; opacity: 0.4; font-size: 0.85rem; letter-spacing: 2px; }
+
+        .cart-bar {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%) translateY(250%);
+            width: 90%;
+            max-width: 680px;
+            background: var(--dark-burgundy);
+            border: 1px solid var(--gold);
+            color: var(--white);
+            padding: 20px 35px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 100px;
+            z-index: 1000;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+            transition: transform 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+            backdrop-filter: blur(10px);
+        }
+        .cart-bar.active { transform: translateX(-50%) translateY(0); }
+        .cart-bar strong { color: var(--gold); font-size: 1.4rem; }
+        
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.92); display: none; align-items: center; justify-content: center; z-index: 2000; backdrop-filter: blur(12px); opacity: 0; transition: opacity 0.4s ease; }
+        .modal { background: white; width: 95%; max-width: 600px; border-radius: 4px; overflow: hidden; color: var(--dark-burgundy); position: relative; transform: scale(0.9) translateY(30px); transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .modal.active { transform: scale(1) translateY(0); }
+        
+        .modal-img { position: relative; height: 300px; overflow: hidden; }
+        .modal-img img { width: 100%; height: 100%; object-fit: cover; }
+        .modal-img-ov { position: absolute; top:0; left:0; width:100%; height:100%; background: linear-gradient(transparent, rgba(0,0,0,0.8)); }
+        .modal-img-txt { position: absolute; bottom: 30px; left: 30px; color: white; right: 30px; }
+        .modal-img-txt h3 { font-size: 2.8rem; margin-bottom: 8px; }
+        .modal-close { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.6); border: none; color: white; width: 40px; height: 40px; border-radius: 50%; cursor: pointer; font-size: 1.4rem; z-index: 10; }
+        [dir="rtl"] .modal-close { right: auto; left: 20px; }
+
+        .modal-body { padding: 3rem; }
+        .variant-chip { flex: 1; padding: 15px; border: 1px solid #f0f0f0; text-align: center; cursor: pointer; transition: var(--transition); background: #fafafa; }
+        .variant-chip.active { border-color: var(--gold); background: #fffdf5; color: var(--burgundy); font-weight: 700; }
+        .qty-control { display: flex; align-items: center; gap: 15px; margin-bottom: 1.5rem; }
+        .qty-control button { width: 40px; height: 40px; border: 1px solid #eee; background: white; cursor: pointer; font-size: 1.5rem; }
+        .qty-control input { width: 80px; text-align: center; font-size: 1.2rem; padding: 5px; }
+        
+        .modal-price-row { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f5f5f5; padding-top: 2rem; margin-top: 1rem; }
+        .add-cart-btn { padding: 15px 35px; background: var(--burgundy); color: var(--gold); border: 1px solid var(--gold); font-weight: 800; cursor: pointer; }
+
+        .notif { position: fixed; bottom: 120px; right: 40px; background: var(--gold); color: var(--burgundy); padding: 20px 40px; transform: translateX(250%); transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 3000; font-weight: 900; }
+        .notif.show { transform: translateX(0); }
+
+        @media (max-width: 992px) { 
+            .order-container { grid-template-columns: 1fr; } 
+            .summary-card { position: static; margin-top: 3rem; }
+            .hero h2 { font-size: 3.2rem; }
+        }
+        @media (max-width: 768px) { 
+            .form-row { grid-template-columns: 1fr; gap: 1.5rem; } 
+            .modal-price-row { flex-direction: column; gap: 1rem; }
+            .add-cart-btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="lang-switch">
+    <button class="lang-btn" onclick="toggleLang()">العربية</button>
+</div>
+
+<header id="top">
+  <div class="logo-container">
+    <img src="https://r2-bucket.flowith.net/f/e88b6a20450588ae/myzina_luxury_pastry_logo_index_0.jpeg" alt="MyZina Luxury Pastry" class="logo-img">
+  </div>
+  <div class="hd"><span></span><span class="hd-star">✦</span><span></span></div>
+  <p class="tagline" data-key="tagline">L'Excellence de la Pâtisserie Algérienne</p>
+  <nav>
+    <a href="#produits" data-key="nav1">Nos Créations</a>
+    <a href="#qualite" data-key="nav2">Nos Gammes</a>
+    <a href="#commande" data-key="nav3">Commander</a>
+    <a href="#contact" data-key="nav4">Contact</a>
+  </nav>
+</header>
+
+<div class="hero">
+  <h2 data-key="hero_h">L'Art des Gâteaux<br>Traditionnels Algériens</h2>
+  <div class="ornament">✦ ✦ ✦</div>
+  <p data-key="hero_p">Une immersion sensorielle dans le patrimoine sucré de l'Algérie. Chaque pièce est une œuvre d'art, façonnée à la main avec passion.</p>
+</div>
+
+<section id="produits">
+  <div class="sec-title">
+    <h3 data-key="spec_h">Nos Spécialités</h3>
+    <p data-key="spec_p">Sélectionnez vos douceurs pour composer votre coffret</p>
+  </div>
+  <div class="products-grid" id="product_grid"></div>
+</section>
+
+<section id="qualite" class="quality-section">
+  <div class="sec-title">
+    <h3 style="color:var(--gold)" data-key="qual_h">Nos Standards d'Excellence</h3>
+    <p style="color:var(--light-gold)" data-key="qual_p">Deux expériences adaptées à vos exigences</p>
+  </div>
+  <div class="quality-grid">
+    <div class="quality-card">
+      <span class="q-icon">🌸</span>
+      <div class="q-name" data-key="q1_n">Classique</div>
+      <div class="q-desc" data-key="q1_d">L'authenticité pure. Recettes familiales transmises et saveurs équilibrées.</div>
+    </div>
+    <div class="quality-card" style="border-width: 2px; border-color: var(--gold);">
+      <span class="q-icon">👑</span>
+      <div class="q-name" data-key="q2_n">Prestige</div>
+      <div class="q-desc" data-key="q2_d">Le luxe ultime. Amandes extra-fines, miel de montagne et finitions à la feuille d'or.</div>
+    </div>
+  </div>
+</section>
+
+<div class="order-section" id="commande">
+  <div class="sec-title">
+    <h3 data-key="order_h">Finaliser la Commande</h3>
+    <p data-key="order_p">Un service prestige pour des moments inoubliables</p>
+  </div>
+
+  <div class="order-container">
+    <form class="order-form-container" id="order_form">
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f_name" data-key="f_name">Nom & Prénom *</label>
+          <input type="text" id="f_name" required>
+        </div>
+        <div class="form-group">
+          <label for="f_phone" data-key="f_phone">Téléphone *</label>
+          <input type="tel" id="f_phone" required>
+        </div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label for="f_email" data-key="f_email">Email *</label>
+          <input type="email" id="f_email" required>
+        </div>
+        <div class="form-group">
+          <label for="f_wilaya" data-key="f_wilaya">Wilaya de Livraison *</label>
+          <select id="f_wilaya" required>
+            <option value="" data-key="select_default">-- Sélectionner --</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-bottom:2rem;">
+        <label for="f_address" data-key="f_addr">Adresse précise *</label>
+        <input type="text" id="f_address" required>
+      </div>
+
+      <div class="form-group" style="margin-bottom:2rem;">
+        <label for="f_occasion" data-key="f_occ">Type d'événement</label>
+        <select id="f_occasion">
+          <option value="" data-key="occ_0">-- Choisir --</option>
+          <option value="Mariage" data-key="occ_1">Fiançailles / Mariage</option>
+          <option value="Naissance" data-key="occ_2">Circoncision / Naissance</option>
+          <option value="Aid" data-key="occ_3">Aïd el Fitr / Adha</option>
+          <option value="Cadeau" data-key="occ_4">Cadeau Prestige</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="f_msg" data-key="f_msg">Demandes spécifiques</label>
+        <textarea id="f_msg" rows="4"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn" id="submit_btn" data-key="btn_order">Confirmer ma Commande</button>
+      <div id="form_msg" style="margin-top:20px; text-align:center; font-weight:bold;"></div>
+    </form>
+
+    <div class="summary-card">
+      <span class="summary-title" data-key="sum_h">Récapitulatif</span>
+      <div id="summary_items_list">
+        <p style="opacity:0.5; font-style:italic;" data-key="sum_empty">Aucun produit sélectionné...</p>
+      </div>
+
+      <div class="summary-total-box">
+        <div class="summary-item">
+          <span data-key="s_sub">Sous-total</span>
+          <span id="sum_subtotal">0 DA</span>
+        </div>
+        <div class="summary-item" id="sum_discount_row" style="display:none; color:var(--light-gold);">
+          <span data-key="s_disc">Remise Volume</span>
+          <span id="sum_discount">-0 DA</span>
+        </div>
+        <div class="summary-item">
+          <span data-key="s_ship">Frais de livraison</span>
+          <span id="sum_shipping">0 DA</span>
+        </div>
+        <div class="total-row">
+          <span class="total-label" data-key="s_total">Total</span>
+          <span class="total-val" id="sum_total_final">0 DA</span>
+        </div>
+        <p style="font-size:0.9rem; opacity:0.6; margin-top:10px;" id="shipping_info_txt" data-key="ship_hint">Sélectionnez une wilaya.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer id="contact">
+  <img src="https://r2-bucket.flowith.net/f/e88b6a20450588ae/myzina_luxury_pastry_logo_index_0.jpeg" alt="MyZina Footer" class="footer-logo">
+  <div class="footer-info">
+    <strong data-key="foot_t">MyZina – Haute Pâtisserie Traditionnelle</strong><br>
+    📍 Alger, Algérie &nbsp;•&nbsp; 📞 +213 550 00 00 00<br>
+    📧 contact@myzina.dz
+  </div>
+  <div class="hd" style="opacity: 0.2;"><span></span><span class="hd-star">✦</span><span></span></div>
+  <small class="footer-copy">© 2026 MyZina Luxury Pastry. Tous droits réservés.</small>
+</footer>
+
+<div class="cart-bar" id="cart_bar">
+  <div>🛒 <span id="cart_count">0</span> <span data-key="cart_pcs">pièces</span> • <strong id="cart_total">0</strong> DA</div>
+  <div style="display:flex; gap:10px;">
+    <button onclick="document.getElementById('commande').scrollIntoView({behavior:'smooth'})" style="background:var(--gold); color:var(--burgundy); padding:8px 15px; border-radius:20px; font-weight:bold; font-size:0.8rem;" data-key="cart_val">Valider →</button>
+  </div>
+</div>
+
+<div class="notif" id="notif">Ajouté !</div>
+
+<div class="modal-bg" id="modal_bg">
+  <div class="modal" id="modal">
+    <button class="modal-close" id="modal_close_btn">✕</button>
+    <div class="modal-img">
+      <img id="m_img" src="" alt="">
+      <div class="modal-img-ov"></div>
+      <div class="modal-img-txt">
+        <h3 id="m_name">Nom</h3>
+      </div>
+    </div>
+    <div class="modal-body">
+      <span data-key="m_range" style="display:block; margin-bottom:10px; font-size:0.8rem; font-weight:bold; text-transform:uppercase;">Choisir la Gamme</span>
+      <div style="display:flex; gap:10px; margin-bottom:2rem;" id="m_variants"></div>
+      
+      <span data-key="m_qty" style="display:block; margin-bottom:10px; font-size:0.8rem; font-weight:bold; text-transform:uppercase;">Quantité (min 10)</span>
+      <div class="qty-control">
+        <button id="qty_minus">−</button>
+        <input type="number" id="m_qty_val" value="10" min="10">
+        <button id="qty_plus">+</button>
+      </div>
+
+      <div class="modal-price-row">
+        <div style="font-size:2rem; font-weight:bold; font-family:'Playfair Display';" id="m_price">0 DA</div>
+        <button class="add-cart-btn" id="add_to_cart_btn" data-key="m_add">Ajouter 🛒</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+    const WILAYAS = ["01 Adrar", "02 Chlef", "03 Laghouat", "04 Oum El Bouaghi", "05 Batna", "06 Béjaïa", "07 Biskra", "08 Béchar", "09 Blida", "10 Bouira", "11 Tamanrasset", "12 Tébessa", "13 Tlemcen", "14 Tiaret", "15 Tizi Ouzou", "16 Alger", "17 Djelfa", "18 Jijel", "19 Sétif", "20 Saïda", "21 Skikda", "22 Sidi Bel Abbès", "23 Annaba", "24 Guelma", "25 Constantine", "26 Médéa", "27 Mostaganem", "28 M'Sila", "29 Mascara", "30 Ouargla", "31 Oran", "32 El Bayadh", "33 Illizi", "34 Bordj Bou Arreridj", "35 Boumerdès", "36 El Tarf", "37 Tindouf", "38 Tissemsilt", "39 El Oued", "40 Khenchela", "41 Souk Ahras", "42 Tipaza", "43 Mila", "44 Aïn Defla", "45 Naâma", "46 Aïn Témouchent", "47 Ghardaïa", "48 Relizane", "49 El M'Ghair", "50 El Meniaa", "51 Ouled Djellal", "52 Bordj Baji Mokhtar", "53 Béni Abbès", "54 Timimoun", "55 Touggourt", "56 Djanet", "57 In Salah", "58 In Guezzam"];
+
+    const CATALOG = [
+        { id: 'baklava', fr: 'Baklava aux Amandes', ar: 'بقلاوة باللوز', img: 'https://images.unsplash.com/photo-1519676867240-f03562e64548?q=80&w=600&auto=format&fit=crop', prices: { classique: 120, prestige: 180 } },
+        { id: 'tcherek', fr: 'Tcherek el Aryan', ar: 'تشاراك العريان', img: 'https://images.unsplash.com/photo-1621263766961-75225e751497?q=80&w=600&auto=format&fit=crop', prices: { classique: 100, prestige: 150 } },
+        { id: 'makrout', fr: 'Makrout el Louz', ar: 'مقروط اللوز', img: 'https://images.unsplash.com/photo-1590089415225-401ed6f9db8e?q=80&w=600&auto=format&fit=crop', prices: { classique: 130, prestige: 190 } },
+        { id: 'ghribia', fr: 'Ghribia', ar: 'غريبية', img: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=600&auto=format&fit=crop', prices: { classique: 80, prestige: 120 } },
+        { id: 'mchawek', fr: 'Mchawek', ar: 'مشوك', img: 'https://images.unsplash.com/photo-1603532648955-039310d9ed75?q=80&w=600&auto=format&fit=crop', prices: { classique: 110, prestige: 160 } },
+        { id: 'araysh', fr: 'Arayech', ar: 'عرايش', img: 'https://images.unsplash.com/photo-1505935428862-770b6f24f629?q=80&w=600&auto=format&fit=crop', prices: { classique: 140, prestige: 200 } }
+    ];
+
+    const I18N = {
+        fr: {
+            tagline: "L'Excellence de la Pâtisserie Algérienne",
+            nav1: "Nos Créations", nav2: "Nos Gammes", nav3: "Commander", nav4: "Contact",
+            hero_h: "L'Art des Gâteaux<br>Traditionnels Algériens",
+            hero_p: "Une immersion sensorielle dans le patrimoine sucré de l'Algérie.",
+            spec_h: "Nos Spécialités", spec_p: "Sélectionnez vos douceurs pour composer votre coffret",
+            qual_h: "Nos Standards d'Excellence", qual_p: "Deux expériences adaptées à vos exigences",
+            q1_n: "Classique", q1_d: "L'authenticité pure. Recettes familiales transmises.",
+            q2_n: "Prestige", q2_d: "Le luxe ultime. Amandes extra-fines et feuille d'or.",
+            order_h: "Finaliser la Commande", order_p: "Un service prestige pour des moments inoubliables",
+            f_name: "Nom & Prénom *", f_phone: "Téléphone *", f_email: "Email *", f_wilaya: "Wilaya de Livraison *", f_addr: "Adresse précise *",
+            f_occ: "Type d'événement", f_msg: "Demandes spécifiques", select_default: "-- Sélectionner --",
+            occ_0: "-- Choisir --", occ_1: "Fiançailles / Mariage", occ_2: "Circoncision / Naissance", occ_3: "Aïd", occ_4: "Cadeau Prestige",
+            btn_order: "Confirmer ma Commande", sum_h: "Récapitulatif", sum_empty: "Aucun produit sélectionné...",
+            s_sub: "Sous-total", s_disc: "Remise Volume", s_ship: "Frais de livraison", s_total: "Total", ship_hint: "Sélectionnez une wilaya.",
+            foot_t: "MyZina – Haute Pâtisserie Traditionnelle", cart_pcs: "pièces", cart_val: "Valider →",
+            m_range: "Choisir la Gamme", m_qty: "Quantité (min 10)", m_add: "Ajouter 🛒", added: "Ajouté !", range_c: "Classique", range_p: "Prestige", order_ok: "Merci ! Commande enregistrée."
+        },
+        ar: {
+            tagline: "التميز في الحلويات الجزائرية",
+            nav1: "إبداعاتنا", nav2: "مجموعاتنا", nav3: "اطلب الآن", nav4: "اتصل بنا",
+            hero_h: "فن الحلويات<br>الجزائرية التقليدية",
+            hero_p: "انغماس حسي في التراث الحلوي للجزائر.",
+            spec_h: "تخصصاتنا", spec_p: "اختر حلوياتك لتكوين علبتك الخاصة",
+            qual_h: "معايير التميز لدينا", qual_p: "تجربتان تتناسبان مع متطلباتكم",
+            q1_n: "كلاسيكي", q1_d: "الأصالة الخالصة. وصفات عائلية متوارثة.",
+            q2_n: "بريستيج", q2_d: "الفخامة المطلقة. لوز رفيع ولمسات بصفائح الذهب.",
+            order_h: "إتمام الطلب", order_p: "خدمة راقية للحظات لا تنسى",
+            f_name: "الاسم واللقب *", f_phone: "الهاتف *", f_email: "البريد الإلكتروني *", f_wilaya: "ولاية التوصيل *", f_addr: "العنوان الدقيق *",
+            f_occ: "نوع المناسبة", f_msg: "طلبات خاصة", select_default: "-- اختر --",
+            occ_0: "-- اختر --", occ_1: "خطوبة / زواج", occ_2: "ختان / ولادة", occ_3: "عيد", occ_4: "هدية فاخرة",
+            btn_order: "تأكيد الطلب", sum_h: "ملخص الطلب", sum_empty: "لم يتم اختيار أي منتج...",
+            s_sub: "المجموع الفرعي", s_disc: "خصم الكمية", s_ship: "تكاليف التوصيل", s_total: "المجموع النهائي", ship_hint: "اختر الولاية لحساب التكاليف.",
+            foot_t: "ماي زينا – الحلويات التقليدية الراقية", cart_pcs: "قطعة", cart_val: "تأكيد →",
+            m_range: "اختر النوع", m_qty: "الكمية (أدنى 10)", m_add: "أضف للسلة 🛒", added: "تمت الإضافة!", range_c: "كلاسيكي", range_p: "بريستيج", order_ok: "شكرا! تم تسجيل طلبكم بنجاح."
+        }
+    };
+
+    let currentLang = 'fr';
+    let cart = [];
+    let currentSel = { productId: null, variant: 'classique', qty: 10 };
+
+    function init() {
+        populateWilayas();
+        renderProducts();
+        setupEvents();
+        applyI18N();
+        gsap.to('body', { opacity: 1, duration: 1 });
+    }
+
+    function populateWilayas() {
+        const select = document.getElementById('f_wilaya');
+        WILAYAS.forEach(w => {
+            const opt = document.createElement('option');
+            opt.value = w; opt.textContent = w;
+            select.appendChild(opt);
+        });
+    }
+
+    function toggleLang() {
+        currentLang = currentLang === 'fr' ? 'ar' : 'fr';
+        document.documentElement.lang = currentLang;
+        document.documentElement.dir = currentLang === 'ar' ? 'rtl' : 'ltr';
+        document.querySelector('.lang-btn').textContent = currentLang === 'fr' ? 'العربية' : 'Français';
+        applyI18N();
+        renderProducts();
+        updateCartUI();
+    }
+
+    function applyI18N() {
+        const keys = I18N[currentLang];
+        document.querySelectorAll('[data-key]').forEach(el => {
+            const key = el.getAttribute('data-key');
+            if (keys[key]) el.innerHTML = keys[key];
+        });
+    }
+
+    function renderProducts() {
+        const grid = document.getElementById('product_grid');
+        grid.innerHTML = CATALOG.map(p => `
+            <div class="product-card" onclick="openProduct('${p.id}')">
+                <div class="product-img-wrap"><img src="${p.img}" class="product-img"></div>
+                <div class="product-info">
+                    <h4>${p[currentLang]}</h4>
+                    <p class="price-tag">${currentLang === 'fr' ? 'Dès' : 'ابتداءً من'} ${p.prices.classique} DA</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    window.openProduct = function(id) {
+        const p = CATALOG.find(x => x.id === id);
+        currentSel = { productId: id, variant: 'classique', qty: 10 };
+        document.getElementById('m_img').src = p.img;
+        document.getElementById('m_name').textContent = p[currentLang];
+        document.getElementById('m_qty_val').value = 10;
+        document.getElementById('m_variants').innerHTML = `
+            <div class="variant-chip active" id="v_classique" onclick="selectVariant('classique')">${I18N[currentLang].range_c}<br><small>${p.prices.classique} DA</small></div>
+            <div class="variant-chip" id="v_prestige" onclick="selectVariant('prestige')">${I18N[currentLang].range_p}<br><small>${p.prices.prestige} DA</small></div>
+        `;
+        updateModalPrice();
+        const bg = document.getElementById('modal_bg');
+        bg.style.display = 'flex';
+        setTimeout(() => { bg.style.opacity = '1'; document.getElementById('modal').classList.add('active'); }, 10);
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.selectVariant = function(v) {
+        currentSel.variant = v;
+        document.querySelectorAll('.variant-chip').forEach(c => c.classList.remove('active'));
+        document.getElementById(`v_${v}`).classList.add('active');
+        updateModalPrice();
+    };
+
+    function updateModalPrice() {
+        const p = CATALOG.find(x => x.id === currentSel.productId);
+        let total = p.prices[currentSel.variant] * currentSel.qty;
+        if (currentSel.qty >= 50) total *= 0.9;
+        document.getElementById('m_price').textContent = `${Math.round(total)} DA`;
+    }
+
+    function setupEvents() {
+        document.getElementById('modal_close_btn').onclick = closeModal;
+        document.getElementById('qty_plus').onclick = () => { currentSel.qty++; document.getElementById('m_qty_val').value = currentSel.qty; updateModalPrice(); };
+        document.getElementById('qty_minus').onclick = () => { if(currentSel.qty > 10) { currentSel.qty--; document.getElementById('m_qty_val').value = currentSel.qty; updateModalPrice(); } };
+        document.getElementById('m_qty_val').onchange = (e) => { let v = parseInt(e.target.value); if(isNaN(v) || v < 10) v = 10; currentSel.qty = v; updateModalPrice(); };
+        document.getElementById('add_to_cart_btn').onclick = addToCart;
+        document.getElementById('f_wilaya').onchange = updateCartUI;
+        document.getElementById('order_form').onsubmit = handleOrder;
+    }
+
+    function closeModal() {
+        const bg = document.getElementById('modal_bg');
+        document.getElementById('modal').classList.remove('active');
+        bg.style.opacity = '0';
+        setTimeout(() => { bg.style.display = 'none'; document.body.style.overflow = ''; }, 400);
+    }
+
+    function addToCart() {
+        const p = CATALOG.find(x => x.id === currentSel.productId);
+        const exists = cart.find(x => x.productId === p.id && x.variant === currentSel.variant);
+        if (exists) { exists.qty += currentSel.qty; } else {
+            cart.push({ id: Date.now(), productId: p.id, name: p[currentLang], variant: currentSel.variant, qty: currentSel.qty, price: p.prices[currentSel.variant] });
+        }
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.8 }, colors: ['#d4af37', '#4a0404'] });
+        closeModal();
+        updateCartUI();
+        showNotif(I18N[currentLang].added);
+    }
+
+    window.removeItem = function(id) {
+        cart = cart.filter(x => x.id !== id);
+        updateCartUI();
+    };
+
+    function updateCartUI() {
+        const list = document.getElementById('summary_items_list');
+        let subtotal = 0, discount = 0, pieces = 0;
+        if (cart.length === 0) {
+            list.innerHTML = `<p style="opacity:0.5; font-style:italic;">${I18N[currentLang].sum_empty}</p>`;
+            document.getElementById('cart_bar').classList.remove('active');
+        } else {
+            document.getElementById('cart_bar').classList.add('active');
+            list.innerHTML = cart.map(item => {
+                let base = item.price * item.qty;
+                let final = base;
+                if (item.qty >= 50) { let d = base * 0.1; discount += d; final -= d; }
+                subtotal += final; pieces += item.qty;
+                return `<div class="summary-item">
+                    <span>${item.qty}x ${item.name} (${item.variant})</span>
+                    <span>${Math.round(final)} DA <button onclick="removeItem(${item.id})" style="color:#ff6b6b; margin-left:10px;">✕</button></span>
+                </div>`;
+            }).join('');
+        }
+        const wilaya = document.getElementById('f_wilaya').value;
+        let shipping = wilaya ? (wilaya.includes("16 Alger") ? 450 : 800) : 0;
+        document.getElementById('cart_count').textContent = pieces;
+        document.getElementById('cart_total').textContent = Math.round(subtotal);
+        document.getElementById('sum_subtotal').textContent = `${Math.round(subtotal + discount)} DA`;
+        document.getElementById('sum_discount_row').style.display = discount > 0 ? 'flex' : 'none';
+        document.getElementById('sum_discount').textContent = `-${Math.round(discount)} DA`;
+        document.getElementById('sum_shipping').textContent = `${shipping} DA`;
+        document.getElementById('sum_total_final').textContent = `${Math.round(subtotal + shipping)} DA`;
+        if(wilaya) document.getElementById('shipping_info_txt').textContent = `${wilaya}: ${shipping} DA`;
+    }
+
+    function showNotif(m) {
+        const n = document.getElementById('notif');
+        n.textContent = m; n.classList.add('show');
+        setTimeout(() => n.classList.remove('show'), 3000);
+    }
+
+    function handleOrder(e) {
+        e.preventDefault();
+        if (cart.length === 0) return alert("Votre panier est vide");
+        const btn = document.getElementById('submit_btn');
+        btn.disabled = true; btn.textContent = "...";
+        setTimeout(() => {
+            confetti({ particleCount: 100, spread: 80, origin: { y: 0.5 } });
+            document.getElementById('form_msg').innerHTML = `<span style="color:var(--burgundy)">${I18N[currentLang].order_ok}</span>`;
+            cart = []; updateCartUI(); e.target.reset();
+            setTimeout(() => { btn.disabled = false; btn.textContent = I18N[currentLang].btn_order; document.getElementById('form_msg').innerHTML = ""; }, 5000);
+        }, 1500);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+</script>
+
+</body>
+</html>
